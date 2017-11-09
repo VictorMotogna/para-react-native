@@ -1,22 +1,14 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Splash from './Splash';
+import Splash from './src/components/Splash';
+import Login from './src/components/Login/Login';
+import AddExpense from './src/components/expense/AddExpense'
+import { StackNavigator } from 'react-navigation';
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Splash></Splash>
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+const Navigation = StackNavigator({
+    Splash: {screen: Splash},
+    Login: {screen: Login},
+    AddExpense: {screen: AddExpense}
 });
+
+export default Navigation;

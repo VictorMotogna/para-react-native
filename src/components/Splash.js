@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 
+const util = require('util');
+
 export default class Splash extends Component {
+    static navigationOptions = {
+        title: 'Splash screen',
+    };
     render() {
+        var {navigate} = this.props.navigation;
         return (
             <View style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
                 <View style={{ flex: 1, marginTop: 180 }}>
@@ -10,7 +16,11 @@ export default class Splash extends Component {
                     <Text style={ styles.subtitle }>Made by Victor Motogna</Text>
                 </View>
                 <View style={ styles.login }>
-                    <Button title="Log in" onPress={logIn}></Button>
+                    <Button
+                        onPress={
+                            () => navigate("Login", {})
+                        }
+                        title="Log in"/>
                 </View>
             </View>
         );
@@ -33,7 +43,3 @@ const styles = StyleSheet.create({
         marginBottom: 50
     }
 });
-
-function logIn() {
-
-}
