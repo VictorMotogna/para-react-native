@@ -36,7 +36,7 @@ export default class Login extends Component {
 
                         <TouchableOpacity
                             onPress={
-                                () => navigate("AddExpense", {})
+                                () => navigate("ExpenseList", {})
                             }
                             style={styles.buttonContainer}>
                             <Text style={styles.buttonText}>Login</Text>
