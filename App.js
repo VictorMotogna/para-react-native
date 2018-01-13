@@ -5,7 +5,8 @@ import Login from './src/components/Login/Login';
 import AddExpense from './src/components/expense/AddExpense';
 import ExpenseList from './src/components/expense/ExpenseList';
 import Expense from './src/components/expense/Expense';
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator, NavigationActions } from 'react-navigation';
+import './src/components/data_global/Global';
 
 const Navigation = StackNavigator({
     Splash: {screen: Splash},

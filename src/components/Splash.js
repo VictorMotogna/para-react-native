@@ -1,12 +1,48 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { AsyncStorage, View, Text, StyleSheet, Button } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 
 const util = require('util');
 
 export default class Splash extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    state = {
+        username: "none"
+    };
+
+    async componentDidMount() {
+        try {
+            const value = await AsyncStorage.getItem('@Username:key');
+            if (value !== null){
+                this.setState({ username: value });
+            }
+        } catch (error) {
+            // Error retrieving data
+            console.warn(error)
+        }
+    }
+
+    _login = () => {
+        if(this.state.username == "none") {
+            this.props.navigation.navigate("Login", {});
+        } else {
+            const navigateLoading = NavigationActions.reset({
+                index: 0,
+                actions: [
+                    NavigationActions.navigate({ routeName: 'ExpenseList'})
+                ]
+            });
+            this.props.navigation.dispatch(navigateLoading);
+        }
+    }
+
     static navigationOptions = {
         title: 'Splash screen',
     };
+
     render() {
         var {navigate} = this.props.navigation;
         return (
@@ -18,7 +54,7 @@ export default class Splash extends Component {
                 <View style={ styles.login }>
                     <Button
                         onPress={
-                            () => navigate("Login", {})
+                            () => { this._login() }
                         }
                         title="Log in"/>
                 </View>

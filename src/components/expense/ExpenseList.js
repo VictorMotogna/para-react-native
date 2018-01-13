@@ -1,14 +1,41 @@
 import React, {Component} from 'react';
-import {View, ListView, Text, TouchableHighlight, ScrollView} from 'react-native';
+import {View, ListView, Text, TouchableHighlight, ScrollView, Button, AsyncStorage} from 'react-native';
+import { NavigationActions } from 'react-navigation';
 
 const util = require('util');
 
 var expenseArray = ["Food", "Drinks", "Gift", "Jacket"];
 
 export default class ExpenseList extends Component {
-    static navigationOptions = {
-        title: 'Expenses screen',
+
+    static navigationOptions = ({ navigation }) => {
+        const { params = {} } = navigation.state;
+
+        return {
+            title: 'Expenses screen',
+            headerRight: <Button title="Sign out" onPress={() => params.signOut()} />
+        };
     };
+
+    signOut = async () => {
+        try {
+            await AsyncStorage.setItem('@Username:key', 'none');
+        } catch (error) {
+            // Error saving data
+        }
+
+        const navigateLoading = NavigationActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ routeName: 'Splash'})
+            ]
+        });
+        this.props.navigation.dispatch(navigateLoading);
+    };
+
+    componentDidMount() {
+        this.props.navigation.setParams({ signOut: this.signOut });
+    }
 
     constructor(props) {
         super(props);

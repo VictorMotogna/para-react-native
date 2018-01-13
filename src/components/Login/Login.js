@@ -1,14 +1,72 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Image} from 'react-native';
+import {
+    StyleSheet,
+    View,
+    TextInput,
+    TouchableOpacity,
+    Text,
+    KeyboardAvoidingView,
+    Image,
+    AsyncStorage
+} from 'react-native';
+import {NavigationActions} from 'react-navigation';
 
 const util = require('util');
 
 export default class Login extends Component {
+    state = {
+        username: "vic",
+        password: "test123",
+        role: 1,
+        loginButton: 'Login'
+    }
+
     static navigationOptions = {
         title: 'Login screen',
     };
+
+    _signIn = () => {
+        fetch('https://ovesenterprise.ro/para/login.json')
+            .then(response => response.json())
+            .then(responseJson => {
+                var ok = false;
+
+                for (var i = 0; i < responseJson.users.length; i++) {
+                    if (this.state.username == responseJson.users[i].username && this.state.password == responseJson.users[i].password) {
+                        ok = true;
+                    }
+                }
+
+                if (ok == true) {
+                    this.setUsername();
+
+                    const navigateLoading = NavigationActions.reset({
+                        index: 0,
+                        actions: [
+                            NavigationActions.navigate({routeName: 'ExpenseList'})
+                        ]
+                    });
+                    this.props.navigation.dispatch(navigateLoading);
+
+                } else {
+                    this.setState({loginButton: "Try again"})
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    async setUsername() {
+        try {
+            await AsyncStorage.setItem('@Username:key', this.state.username);
+        } catch (error) {
+            // Error saving data
+        }
+    }
+
     render() {
-        var {navigate} = this.props.navigation;
+        const {navigate} = this.props.navigation;
         return (
             <KeyboardAvoidingView behavior="padding" style={styles.container}>
                 <View style={styles.logoContainer}>
@@ -26,20 +84,24 @@ export default class Login extends Component {
                             placeholder="username"
                             placeholderTextColor="#7f8c8d"
                             returnKeyType="next"
+                            onChangeText={(username) => this.setState({username})}
                             style={styles.input}/>
                         <TextInput
                             placeholder="password"
                             placeholderTextColor="#7f8c8d"
                             returnKeyType="go"
                             secureTextEntry
+                            onChangeText={(password) => this.setState({password})}
                             style={styles.input}/>
 
                         <TouchableOpacity
                             onPress={
-                                () => navigate("ExpenseList", {})
+                                () => {
+                                    this._signIn()
+                                }
                             }
                             style={styles.buttonContainer}>
-                            <Text style={styles.buttonText}>Login</Text>
+                            <Text style={styles.buttonText}>{this.state.loginButton}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -59,9 +121,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
 
-    formContainer: {
-
-    },
+    formContainer: {},
 
     logo: {
         width: 150,
