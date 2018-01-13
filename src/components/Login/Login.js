@@ -16,6 +16,7 @@ const util = require('util');
 export default class Login extends Component {
     state = {
         username: "vic",
+        id: "",
         password: "test123",
         role: 1,
         loginButton: 'Login'
@@ -33,6 +34,7 @@ export default class Login extends Component {
 
                 for (var i = 0; i < responseJson.users.length; i++) {
                     if (this.state.username == responseJson.users[i].username && this.state.password == responseJson.users[i].password) {
+                        global.username = responseJson.users[i].username;
                         ok = true;
                     }
                 }
@@ -60,6 +62,12 @@ export default class Login extends Component {
     async setUsername() {
         try {
             await AsyncStorage.setItem('@Username:key', this.state.username);
+        } catch (error) {
+            // Error saving data
+        }
+
+        try {
+            await AsyncStorage.setItem('@Id:key', this.state.id);
         } catch (error) {
             // Error saving data
         }
